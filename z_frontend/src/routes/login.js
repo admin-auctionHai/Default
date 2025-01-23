@@ -1,9 +1,10 @@
 import React,{useState, useEffect, useRef} from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, User, LogOut, Settings, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-const LoginPage = () => {
+const LoginPageMenu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchBarIsFocused, setSearchBarIsFocused] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -12,11 +13,14 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const panelRef = useRef(null);
+  const navigate = useNavigate();
+
 
   //Login Form handlers
   const handleLogin = () =>{
     console.log("Handled login button is clicked");
-    setShowLoginPanel(true);
+    // Redirecting to login page
+    navigate('./auth/login');
   }
 
   const handleLogout = () => {
@@ -109,7 +113,7 @@ const LoginPage = () => {
           <User size={24} />
           <span>Login</span>
       </button>
-      {showLoginPanel && (
+      {/* {showLoginPanel && (
         <div className="absolute top-14 right-0 bg-white shadow-lg rounded p-3 z-50">
           <h3 className="text-lg font-bold mb-2">Login</h3>
           <div className="mb-2">
@@ -148,11 +152,11 @@ const LoginPage = () => {
           </div>
           <a className='text-gray-700 text-sm' href='#'>Forgot your Password</a>
         </div>
-      )}
+      )} */}
       </div>
     )}
     </div>
   );
 }
 
-export default LoginPage;
+export default LoginPageMenu;

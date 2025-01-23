@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Search, User, LogOut, Settings, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
-import { Outlet } from "react-router-dom";
+import { Outlet,useNavigate } from "react-router-dom";
 import HeaderImage from '../public/images/AuctionHaiProfilePic1.jpeg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoginPage from "./login";
+import LoginPageMenu from "./login";
 import LangThemFontUtility from "./LanguageFontTheme";
 import { colors } from "@mui/material";
 
@@ -13,6 +13,8 @@ const Layout = () => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [showLoginPanel,setShowLoginPanel] = useState(false);
+    const navigate = useNavigate();
+
 
     //Login Form handlers
     const handleLogin = () =>{
@@ -258,14 +260,14 @@ const Layout = () => {
                           </div>
 
                           {/* User/Login Section */}
-                          < LoginPage />
+                          < LoginPageMenu />
                       </div>
                   </div>
               </div>
           </nav>
 
             <main className="flex-grow-1 bg-light">
-                <div className="container py-4">
+                <div className="py">
                     <Outlet />
                 </div>
             </main>

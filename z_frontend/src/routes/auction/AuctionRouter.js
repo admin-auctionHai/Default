@@ -1,6 +1,6 @@
 import React from "react";
 import {Routes, Route} from "react-router-dom";
-import AuctionListing from "./AuctionListing";
+import AuctionListing from '../../features/auction/AuctionListing';
 
 const AuctionRouter = () => {
     return (

@@ -23,7 +23,7 @@ const AuctionWheel = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-[60vh]">
       <div className="relative w-96 h-96 flex justify-center items-center">
         {/* Center Display */}
         <div className="absolute w-40 h-40 bg-white rounded-full shadow-lg flex flex-col items-center justify-center">
