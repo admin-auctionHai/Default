@@ -1,23 +1,30 @@
 package com.auction.z_backend.model;
+// import lombok.setter;
+
+
 
 public class LoginRequest {
     private String email;
     private String password;
 
-    // Getters and Setters
-    public String getEmail() {
-        return email;
+    public String getEmail(){
+        return this.email;
+    }
+    
+    public String getPassword(){
+        return this.password;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email){
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public void setPassword(String pass){
+        this.password = pass;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public LoginRequest(LoginRequest object){
+        this.email = object.getEmail();
+        this.password = object.getPassword();
     }
 }
