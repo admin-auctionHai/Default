@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auction.z_backend.dto.request.BidderSignupRequest;
-import com.auction.z_backend.dto.request.LoginRequest;
+import com.auction.z_backend.auth.dto.request.LoginRequest;
+import com.auction.z_backend.auth.dto.response.AuthResponse;
+import com.auction.z_backend.bidder.dto.request.BidderSignupRequest;
 import com.auction.z_backend.dto.request.TestingRequest;
-import com.auction.z_backend.dto.request.VendorSignupRequest;
-import com.auction.z_backend.dto.response.AuthResponse;
 import com.auction.z_backend.dto.response.TestResponse;
 import com.auction.z_backend.model.MessageResponse;
 import com.auction.z_backend.service.AuthenticationService;
 import com.auction.z_backend.service.testingService;
+import com.auction.z_backend.vendor.dto.request.VendorSignupRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -66,12 +66,20 @@ public class AuthController {
         }    
     }
     
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         logger.debug("Request is reached");
-        return ResponseEntity
-            .status(HttpStatus.ACCEPTED)
-            .body(new MessageResponse("Login Request is Reached"));
+        try {
+
+            AuthResponse response = authService.authenticate(request);
+            return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(response);
+            
+        } catch (Exception e) {
+            logger.debug("Error enclounter in authenticating "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in authenticating : "+e.getMessage());
+        }
     }
     
     @PostMapping("/register/bidder")

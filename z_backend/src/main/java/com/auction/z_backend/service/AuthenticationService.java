@@ -2,22 +2,19 @@ package com.auction.z_backend.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.auction.z_backend.config.SecurityConfig;
-
+import com.auction.z_backend.auth.dto.request.LoginRequest;
+import com.auction.z_backend.auth.dto.response.AuthResponse;
+import com.auction.z_backend.bidder.dto.request.BidderSignupRequest;
+import com.auction.z_backend.bidder.model.UserBidder;
+import com.auction.z_backend.bidder.repository.BidderUserRepository;
 import com.auction.z_backend.common.enums.UserTypes;
-import com.auction.z_backend.dto.request.BidderSignupRequest;
-import com.auction.z_backend.dto.request.LoginRequest;
-import com.auction.z_backend.dto.request.VendorSignupRequest;
-import com.auction.z_backend.dto.response.AuthResponse;
-import com.auction.z_backend.model.User.UserBidder;
-import com.auction.z_backend.model.User.UserVendor;
-import com.auction.z_backend.repository.BidderUserRepository;
-import com.auction.z_backend.repository.VendorUserRepository;
 import com.auction.z_backend.security.jwt.JwtTokenProvider;
+import com.auction.z_backend.vendor.dto.request.VendorSignupRequest;
+import com.auction.z_backend.vendor.model.UserVendor;
+import com.auction.z_backend.vendor.repository.VendorUserRepository;
 
 @Service
 public class AuthenticationService {
@@ -44,7 +41,7 @@ public class AuthenticationService {
             UserBidder bidder = bidderOpt.get();
             if (passwordEncoder.matches(request.getPassword(), bidder.getPassword())) {
                 String token = jwtTokenProvider.generateToken(bidder.getId(),request.getLoginId(), UserTypes.BIDDER);
-                return new AuthResponse(bidder.getId(),bidder.getLoginId(),token,UserTypes.BIDDER,bidder.getTitle());
+                return new AuthResponse(bidder.getId(),bidder.getLoginId(),token,UserTypes.BIDDER,bidder.getName());
             }
             throw new RuntimeException("Invalid credentials");
         }
@@ -60,7 +57,7 @@ public class AuthenticationService {
                     vendor.getLoginId(),
                     token,
                     UserTypes.VENDOR,
-                    vendor.getTitle()
+                    vendor.getName()
                 );
             }
             throw new RuntimeException("Invalid credentials");
@@ -84,18 +81,20 @@ public class AuthenticationService {
             UserVendor vendor = new UserVendor();
             vendor.setLoginId(request.getLoginId());
             vendor.setPassword(hashedPassword);
-            vendor.setCorresEmail(request.getCorresEmail());
+            vendor.setEmail(request.getCorresEmail());
             vendor.setContactNumber(request.getContactNumber());
-            vendor.setTitle(request.getTitle());
-            vendor.setDesig(request.getDesig());
-            vendor.setTypeOfUser("VENDOR");
-            vendor.setDob(request.getDob());
+            vendor.setName(request.getTitle());
+            vendor.setDesignation(request.getDesig());
+            vendor.setTypeOfUser(request.getUserType());
+            vendor.setDateOfBirth(request.getDob());
+
+
             vendor.setCompanyDetails(request.getCompanyDetails());
             
             UserVendor savedVendor = vendorUserRepository.save(vendor);
             String token = jwtTokenProvider.generateToken(savedVendor.getId(), savedVendor.getLoginId(), UserTypes.VENDOR);
 
-            return new AuthResponse(savedVendor.getId(),savedVendor.getLoginId(),token,UserTypes.VENDOR,savedVendor.getTitle());
+            return new AuthResponse(savedVendor.getId(),savedVendor.getLoginId(),token,UserTypes.VENDOR,savedVendor.getName());
         }
         throw new RuntimeException("Bad Request");
     }
@@ -112,17 +111,18 @@ public class AuthenticationService {
         if (request.getUserType() == UserTypes.BIDDER) {
             if (request.getTitle() == null) {
                 throw new RuntimeException("Full name is required for bidder registration");
+
             }
             
             UserBidder bidder = new UserBidder();
             bidder.setLoginId(request.getLoginId());
             bidder.setPassword(hashedPassword);
-            bidder.setCorresEmail(request.getCorresEmail());
+            bidder.setEmail(request.getCorresEmail());
             bidder.setContactNumber(request.getContactNumber());
-            bidder.setTitle(request.getTitle());
-            bidder.setDesig(request.getDesig());
-            bidder.setTypeOfUser("BIDDER");
-            bidder.setDob(request.getDob());
+            bidder.setName(request.getTitle());
+            bidder.setDesignation(request.getDesig());
+            bidder.setTypeOfUser(UserTypes.BIDDER);
+            bidder.setDateOfBirth(request.getDob());
             bidder.setCompanyDetails(request.getCompanyDetails());
             
             UserBidder savedBidder = bidderUserRepository.save(bidder);
@@ -133,7 +133,7 @@ public class AuthenticationService {
                 savedBidder.getLoginId(),
                 token,
                 UserTypes.BIDDER,
-                savedBidder.getTitle()
+                savedBidder.getName()
             );
         }
         throw new RuntimeException("Bad Request for registering");

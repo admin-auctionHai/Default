@@ -12,18 +12,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auction.z_backend.model.User.UserBidder;
-import com.auction.z_backend.model.User.UserVendor;
-import com.auction.z_backend.repository.BidderUserRepository;
-import com.auction.z_backend.repository.VendorUserRepository;
+import com.auction.z_backend.bidder.model.UserBidder;
+import com.auction.z_backend.bidder.repository.BidderUserRepository;
+import com.auction.z_backend.common.enums.UserTypes;
+import com.auction.z_backend.security.userDetails.CustomUserDetails;
+import com.auction.z_backend.vendor.model.UserVendor;
+import com.auction.z_backend.vendor.repository.VendorUserRepository;
 
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.auction.z_backend.common.enums.UserTypes;
-import com.auction.z_backend.security.userDetails.CustomUserDetails;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
