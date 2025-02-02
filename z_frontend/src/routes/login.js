@@ -1,19 +1,21 @@
-import React,{useState, useEffect, useRef} from 'react';
+import React,{useState, useEffect, useRef, useImperativeHandle} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, User, LogOut, Settings, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from '../services/auth/useAuthHook';
+import {authContext} from '../services/auth/useAuthHook';
 
 
-const LoginPageMenu = () => {
+const LoginPageMenu = React.forwardRef((props, ref) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchBarIsFocused, setSearchBarIsFocused] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showLoginPanel,setShowLoginPanel] = useState(false);
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const panelRef = useRef(null);
   const navigate = useNavigate();
+
 
 
   //Login Form handlers
@@ -23,34 +25,30 @@ const LoginPageMenu = () => {
     navigate('./auth/login');
   }
 
+    useImperativeHandle(ref,()=>({
+        setLogin,
+    }))
+;
+  const userInfo = JSON.parse(localStorage.getItem("user"));
+  // console.log(userInfo);
+  // console.log(userInfo.userType);
+  // const authk = useAuth();
+  // console.log(authk.permissions);
+
+  // const {permissions} = authContext(permissions);
+  // console.log(permissions);
+
+  const setLogin = () =>{
+    console.log("Setting the user to logged in ");
+    setIsLoggedIn(true);
+    setUsername(userInfo.username);
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setIsLoggedIn(false);
     setShowProfileMenu(false);
   };
-
-  const handleSubmit = () => {
-    return new Promise((resolve, reject) => {
-      // Simulate an API call
-      console.log(username,password);
-      setTimeout(() => {
-        if (username === "Anurag" && password === "Bw@VcrJ22x5sGLZ") {
-          resolve("Login successful");
-          setIsLoggedIn(true);
-        } else {
-          reject("Invalid credentials");
-        }
-      }, 1000);
-    })
-      .then((message) => {
-        alert(message);
-        setShowLoginPanel(false); // Hide the panel on successful login
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  };
-
   const handleClickOutside = (event) => {
     if (panelRef.current && !panelRef.current.contains(event.target)) {
       setShowLoginPanel(false); // Collapse the panel if clicked outside
@@ -78,7 +76,7 @@ const LoginPageMenu = () => {
           >
               <UserCircle size={24} />
               <span className="text-truncate" style={{ maxWidth: '100px' }}>
-                  John Doe
+                 {username}
               </span>
               <LogOut size={18} />
           </button>
@@ -157,6 +155,6 @@ const LoginPageMenu = () => {
     )}
     </div>
   );
-}
+});
 
 export default LoginPageMenu;

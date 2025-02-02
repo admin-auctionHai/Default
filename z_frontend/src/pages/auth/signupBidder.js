@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CaptchaValidation from "../../features/auth/captcha";
+import { authService } from "../../services/authServices";
+import OTPVerification from "../../features/auth/otpVerification";
 
 function SignUpPageTailwind() {
-  const [isFormValid, setIsFormValid] = useState(false);
+	const [isFormValid, setIsFormValid] = useState(false);
+	const [currentStep, setCurrentStep] = useState(1);
 	const [formData, setFormData] = useState({
 		loginId: "",
 		correspondenceEmail: "",
@@ -23,6 +26,114 @@ function SignUpPageTailwind() {
 		designation: "",
 		dateOfBirth: "",
 	});
+	//Company Details Validation
+	const [companyFormValid, setCompanyFormValid] = useState(false);
+	const [companyData, setCompanyData] = useState({
+		companyName: "",
+		cin: "",
+		preferentialBidder: "",
+		registeredAddress: "",
+		partnersDirectors: "",
+		foreignCompany: "",
+		city: "",
+		state: "",
+		postalCode: "",
+		panNumber: "",
+		establishmentYear: "",
+		natureOfBusiness: "",
+		legalStatus: "",
+		companyCategory: "",
+	});
+
+	// Add these to the existing errors state
+	const [companyErrors, setCompanyErrors] = useState({
+		companyName: "",
+		cin: "",
+		registeredAddress: "",
+		partnersDirectors: "",
+		city: "",
+		state: "",
+		postalCode: "",
+		panNumber: "",
+		establishmentYear: "",
+		natureOfBusiness: "",
+		legalStatus: "",
+		companyCategory: "",
+	});
+	const [otpValue,setOtpValue] = useState(null);
+	const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+	const goToNextStepOfForm = async (e) =>{
+		e.preventDefault();
+
+		console.log(isEmailVerified,isFormValid,companyFormValid);
+
+		if(isEmailVerified && isFormValid && companyFormValid){
+			console.log("Registering the User");
+
+			//Registering for the bidder signup request
+			const submissionData = {
+				// generalInformation: {
+				// 	...formData,
+				// },
+				// companyDetails: {
+				// 	...companyData,
+				// }
+			};
+			try{
+				const response = await authService.bidderRegister(submissionData);
+				if(response.token){
+				  localStorage.setItem('authToken',response.token);
+				  alert("Successfully Registered as bidder");
+				  window.location.href = "/";
+				}
+				else{
+					setIsEmailVerified(false);
+					setIsFormValid(false);
+					setCompanyFormValid(false);
+					throw new Error("Login ID Already Exist");
+
+				}
+			}catch(err){
+				console.log("Error occured while registering user ",err.message);
+				setErrors(prev=>({
+					...prev,
+					submit:err.message
+				}));
+				setIsEmailVerified(false);
+				setIsFormValid(false);
+				setCompanyFormValid(false);
+				setCurrentStep(1);
+			}
+
+		}
+
+		if(true){
+			console.log("Inside email verification");
+			//Send the email to the user 
+			try{
+				const response = await authService.requestOtp();
+				console.log("Response for OTP Email Verification");
+				setOtpValue(response.otpValue);
+				setCurrentStep(2);
+			}catch(err){
+				alert(err.message);
+				return false;
+			}
+		}
+		else{
+			console.log(isEmailVerified,isFormValid,companyFormValid);
+			console.log("Getting into else block");
+			alert("Kindly fill the form correctly");
+			return false;
+		}
+
+	}
+	
+
+
+  //used to show currentStep page on SignUp Form
+
 
 	// Email validation regex
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -102,39 +213,7 @@ function SignUpPageTailwind() {
 		return !Object.values(newErrors).some((error) => error !== "");
 	};
 
-	//Company Details Validation
-	const [companyData, setCompanyData] = useState({
-		companyName: "",
-		cin: "",
-		preferentialBidder: "",
-		registeredAddress: "",
-		partnersDirectors: "",
-		foreignCompany: "",
-		city: "",
-		state: "",
-		postalCode: "",
-		panNumber: "",
-		establishmentYear: "",
-		natureOfBusiness: "",
-		legalStatus: "",
-		companyCategory: "",
-	});
 
-	// Add these to the existing errors state
-	const [companyErrors, setCompanyErrors] = useState({
-		companyName: "",
-		cin: "",
-		registeredAddress: "",
-		partnersDirectors: "",
-		city: "",
-		state: "",
-		postalCode: "",
-		panNumber: "",
-		establishmentYear: "",
-		natureOfBusiness: "",
-		legalStatus: "",
-		companyCategory: "",
-	});
 
 	// Validation patterns
 	const cinRegex =
@@ -220,34 +299,94 @@ function SignUpPageTailwind() {
 		return !Object.values(newErrors).some((error) => error !== "");
 	};
 
-  const handleSubmit = () => {
+	//Hnadline edit the form from Verifying the email
+	const handleBackToEditForm =() => {
+		setIsFormValid(false);
+		setCompanyFormValid(false);
+		setCurrentStep(1);
+
+	}
+
+	//Hnalding request again
+	const handleRequestAgain = async(e) =>{
+		e.preventDefault();
+		//Send the email to 
+		try{
+
+		}catch(err){
+
+		}
+	}
+
+	const handleOtpVerification = (otp) => {
+		if (otp === "CoorectOtp"){
+			setIsEmailVerified(true);
+		}
+	}
+	const captchaRef = useRef();
+  const handleSubmit = (e) => {
     // First validate both form sections
-    const generalInfoValid = formValidation();
-    const companyInfoValid = validateCompanyForm();
+    // const generalInfoValid = formValidation();
+    // const companyInfoValid = validateCompanyForm();
+	const generalInfoValid = true;
+	const companyInfoValid = true;
     
     // Update form validity state
-    setIsFormValid(generalInfoValid && companyInfoValid);
+    // setIsFormValid(generalInfoValid && companyInfoValid);
   
-    if (!generalInfoValid) {
-      alert('Please check General Information section for errors');
-      return;
-    }
+    // if (!generalInfoValid) {
+    //   alert('Please check General Information section for errors');
+    //   return;
+    // }
   
-    if (!companyInfoValid) {
-      alert('Please check Company Information section for errors');
-      return;
-    }
+    // if (!companyInfoValid) {
+    //   alert('Please check Company Information section for errors');
+    //   return;
+    // }
   
     // If form is valid, trigger the captcha validation
     if (generalInfoValid && companyInfoValid) {
       // This will trigger the existing handleCaptchaSubmit
-      document.querySelector('[data-captcha-submit]')?.click();
+		console.log("Data is valid, sending to next step");
+	 	console.log(captchaRef);
+		if(captchaRef.current){
+			captchaRef.current.handleCaptchaSubmit();
+		}
+		goToNextStepOfForm(e);
+	}
+	else{
+		alert("Form data is not valid");
+		return false;
+	}
+	// const submissionData =  {};
+
+	// 	console.log("Data is : ",submissionData);
+
+	// 	return false;
+	//   try{
+	// 	  const response = await authService.bidderRegister(submissionData);
+	// 	  if(response.token){
+	// 		localStorage.setItem('authToken',response.token);
+	// 		alert("Successfully Registered as bidder");
+	// 		window.location.href = "/";
+	// 	  }
+	//   }catch(err){
+	// 	  setErrors(prev=>({
+	// 		  ...prev,
+	// 		  submit:err.message
+	// 	  }));
+	//   }
     }
-  };
+
+
+
+
+  
 
 	return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-100">
 			<div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-6xl w-full">
+				{currentStep === 1 &&
 				<div className="flex flex-wrap">
 					<h2 className="w-full pt-3">Register as Bidder with Auction Hai</h2>
 
@@ -911,9 +1050,13 @@ function SignUpPageTailwind() {
 						</div>
 					</div>
 				</div>
+				}
+				{currentStep === 1 &&
 				<div id="div-captcha-validation" className="flex w-full pt-1 px-8">
-					<CaptchaValidation />
+					<CaptchaValidation ref={captchaRef} />
 				</div>
+				}
+				{currentStep === 1 &&
 				<div className="w-full items-end">
 					<button
 						className="py-2 px-6 my-4 border border-solid border-black hover:bg-gray-600 transition-colors duration-300"
@@ -921,6 +1064,31 @@ function SignUpPageTailwind() {
 						Submit
 					</button>
 				</div>
+				}
+				
+				{/* Heer is the Email authentication Page */}
+				{currentStep === 2 && 	
+					<div className="w-full h-full flex flex-col items-center">
+						<h2 className="text-2xl p-2">Verify Your Email</h2>
+						<div className="p-4">
+							<div>
+								<p>Kindly enter the OTP send on the Correspondence Email submit on Registration Form</p>
+								<div className="flex-row">
+
+									< OTPVerification onVerify={handleOtpVerification} onRequestAgain={handleRequestAgain} />
+									<div>
+										<button className="m-3 p-2 right-0 border border-solid rounded-xl bg-gray-200 hover:bg-gray-500" onClick={handleBackToEditForm}>
+											Edit Data. Go Back
+										</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				}
+				
 			</div>
 		</div>
 	);

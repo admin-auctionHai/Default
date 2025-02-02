@@ -2,6 +2,7 @@ import React,{useState, useRef, useEffect} from "react";
 import LoginPageImage from '../../public/images/SignUpPage1.jpeg';
 import { authService } from "../../services/authServices";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../services/auth/useAuthHook";
 
 const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -51,18 +52,22 @@ const LoginPage = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
-  
+    const {login} = useAuth();
     const handleSubmit = async (e) => {
       e.preventDefault();
+      console.log(login);
       if (validateForm()) {
         try {
           const credentials = { ...formData };
-          const response = isLogin
-            ? await authService.login(credentials)
-            : await authService.signup(credentials);
-          if (response.token) {
-            localStorage.setItem('authToken', response.token);
-            window.location.href = '/dashboard';
+          console.log(credentials);
+          // const response = isLogin
+          //   ? await login(credentials.email,credentials.password)
+          //   : await authService.signup(credentials);
+          const response = await login({loginId:credentials.email,password:credentials.password});
+          if (response) {
+            // localStorage.setItem('authToken', response.token);
+            alert("Login Susscessfull");
+            window.location.href = '/home';
           }
         } catch (error) {
           setErrors(prev => ({

@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React, {useState, useRef, useEffect} from "react";
+import { useLocation } from "react-router-dom";
 import { Eye, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import { TextField, Select, MenuItem, Button, Grid, Typography, InputLabel, FormControl } from '@mui/material';
 import { FaSearch } from 'react-icons/fa';
 import { BsCalendar, BsBuilding } from 'react-icons/bs';
 import { MdCategory, MdLocalOffer } from 'react-icons/md';
-import AuctionForm from "./AuctionForm";
+import AuctionForm from "./AuctionSearchForm";
 
 const AuctionListing = () =>{
     const categories = ["Electronics", "Furniture", "Vehicles", "Real Estate"];
@@ -15,7 +16,7 @@ const AuctionListing = () =>{
 
     
     // Sample data - Here data need to be loaded using a sql entity, which queries database according to user.
-    const auctionData = [
+    const tableData = [
         { id: "AUC001", title: "Vintage Car", publishDate: "2025-01-01", submissionStartDate: "2025-01-20" },
         { id: "AUC002", title: "Classic Painting", publishDate: "2025-01-02", submissionStartDate: "2025-01-21" },
         { id: "AUC003", title: "Rare Antique Furniture", publishDate: "2025-01-05", submissionStartDate: "2025-01-25" },
@@ -49,12 +50,13 @@ const AuctionListing = () =>{
     ];
     // Table Constants
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState(auctionData);
+    const [filteredData, setFilteredData] = useState(tableData);
+    const location = useLocation();
   
     // Handle search across all fields
     const handleSearch = (value) => {
       setSearchTerm(value);
-      const filtered = auctionData.filter(auction => {
+      const filtered = tableData.filter(auction => {
         const searchStr = value.toLowerCase();
         return (
           auction.id.toString().toLowerCase().includes(searchStr) ||
@@ -65,6 +67,33 @@ const AuctionListing = () =>{
       });
       setFilteredData(filtered);
     };
+
+    const formRef = useRef();
+    console.log("Current Path is : ",location.pathname);
+    const setTheFormData = () =>{
+        console.log("Setting the form data");
+
+        let currentPath = location.pathname;
+        console.log("Current Path : ",currentPath);
+        // currentPath = currentPath.split("/").filter(part=>part);
+        if(currentPath == '/searchAuction/metals'){
+            console.log("got the metal path");
+        }
+        else if(currentPath == '/searchAuction'){
+            console.log("got the pathname");
+        }
+
+    }
+
+    const renderTableData = (data) => {
+
+    }
+
+    useEffect(()=>{
+        console.log("Setting up forms value")
+        setTheFormData();
+    }); 
+    
     
     return (
         <div>

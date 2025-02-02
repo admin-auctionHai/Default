@@ -6,7 +6,7 @@ const AuctionRouter = () => {
     return (
         <Routes>
             <Route index element={< AuctionListing />}/>
-            <Route path="/create"/>
+            <Route path="create"/>
             <Route path="view/:id" />
             <Route path="delete/:id" />
         </Routes>

@@ -111,11 +111,11 @@ const HomePage = () => {
             </button>
           </div>
         </div>
-        <div className='flex w-full h-1/2' id='auction-wheel'>
+        <div className='flex w-full flex-col items-center h-1/2' id='auction-wheel'>
           {/* <div id="homePageImage" className="w-1/3 h-1/3 bg-red-500">
             <img src={HomePageImage} alt="HomePage" className="w-full h-full object-cover"/>
           </div> */}
-          <div className='w-1/3 justify-items-center'><AuctionWheel /></div>
+          <div className='w-2/3 flex flex-col items-center'><AuctionWheel /></div>
         </div>
         <div id='div-why-us' className='my-2 w-full'>
           <section className=''>

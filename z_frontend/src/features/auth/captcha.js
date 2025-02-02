@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 
-function CaptchaValidation() {
+const CaptchaValidation = React.forwardRef((props,ref) => {
     const [captchaText, setCaptchaText] = useState('');
     const [userInput, setUserInput] = useState('');
     const canvasRef = useRef(null);
+
+    useImperativeHandle(ref,()=>({
+        handleCaptchaSubmit,
+    }))
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -91,6 +95,6 @@ function CaptchaValidation() {
             </div>
         </div>
     );
-}
+});
 
 export default CaptchaValidation;
