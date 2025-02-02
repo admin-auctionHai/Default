@@ -3,6 +3,7 @@ package com.auction.z_backend.security.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -30,8 +31,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
-    private int jwtExpiration;
+    @Value("${jwt.access.expiration}")
+    private int jwtAccessTokenExpiration;
+
+    @Value("${jwt.refresh.expiration}")
+    private Long jwtRefreshTokenExpiration;
 
     private SecretKey secretKey;
 
@@ -40,22 +44,30 @@ public class JwtTokenProvider {
         secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Long userId, String loginId, UserTypes userType) {
+    public List<String> generateToken(Long userId, String loginId, UserTypes userType) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+        Date expiryDate = new Date(now.getTime() + jwtAccessTokenExpiration);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("loginId", loginId);
         claims.put("userType", userType);
         claims.put("createdAt", now.getTime());
+        
+        String access_token = Jwts.builder().setClaims(claims)
+                                .setIssuedAt(now)
+                                .setExpiration(expiryDate)
+                                .signWith(secretKey, SignatureAlgorithm.HS512)
+                                .compact();
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(secretKey, SignatureAlgorithm.HS512)
-                .compact();
+        expiryDate = new Date(now.getTime() + jwtRefreshTokenExpiration);
+
+        String refresh_token = Jwts.builder().setClaims(claims)
+                                .setIssuedAt(now)
+                                .setExpiration(expiryDate)
+                                .signWith(secretKey, SignatureAlgorithm.HS512)
+                                .compact();
+        return List.of(access_token,refresh_token);
     }
 
     public Long getUserIdFromToken(String token) {

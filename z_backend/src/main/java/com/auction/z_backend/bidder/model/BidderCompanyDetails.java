@@ -1,5 +1,7 @@
 package com.auction.z_backend.bidder.model;
 
+import com.auction.z_backend.common.enums.UserTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -66,7 +68,7 @@ public class BidderCompanyDetails {
     private String companyCategory;
     
     @Column()
-    private String typeOfUserRegistered;
+    private UserTypes typeOfUserRegistered;
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -2,6 +2,7 @@ package com.auction.z_backend.vendor.model;
 
 import com.auction.z_backend.common.enums.UserTypes;
 
+import java.time.LocalDateTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +38,9 @@ public class UserVendor {
     
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable=false)
+    private LocalDateTime createdAt;
 
     @Column
     private String email;

@@ -23,22 +23,26 @@ import com.auction.z_backend.bidder.service.BidderRegisterService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class BidderController {
 
-    private final BidderRegisterService registerTheVendor;
+    private final BidderRegisterService registerTheBidder;
     private static final Logger logger = LoggerFactory.getLogger(BidderController.class);
 
-    public BidderController(BidderRegisterService registerTheVendor){
-        this.registerTheVendor = registerTheVendor;   
+    public BidderController(BidderRegisterService registerTheBidder){
+        this.registerTheBidder = registerTheBidder;   
     }
     
     @PostMapping("/register")
-    public ResponseEntity<?> vendorRegisterController(@RequestBody @Valid BidderSignupRequest request, BindingResult bindingResult){
+    public ResponseEntity<?> bidderRegisterController(@RequestBody @Valid BidderSignupRequest request, BindingResult bindingResult){
         //Perform Validation checks if required
+        System.out.println("Here It is");
         if(bindingResult.hasErrors()){
+            System.out.println("Here It is");
             logger.debug("Request is failed in validation checks");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in validation check or request");
         }
+        logger.debug("passed the validation checks");
         try {
-            AuthResponse response = registerTheVendor.bidderRegister(request);
+            AuthResponse response = registerTheBidder.bidderRegister(request);
+            System.out.println(response);
             return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(response);
         } catch (Exception e) {
             logger.debug("Error occured while getting response from service");

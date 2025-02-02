@@ -2,6 +2,7 @@ package com.auction.z_backend.bidder.dto.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.auction.z_backend.bidder.model.BidderCompanyDetails;
 import com.auction.z_backend.common.enums.UserTypes;
@@ -28,26 +29,26 @@ public class BidderSignupRequest {
 
     @Email(message="Email should be valid")
     @NotBlank(message="Email is required")
-    private String corresEmail;
+    private String email;
     
-    @NotBlank(message="Title is required")
-    private String title;
+    @NotBlank(message="Name is required")
+    private String name;
 
     @NotBlank(message="Contact Number is required")
     private String contactNumber;
     
     @NotBlank(message="Designation is required")
-    private String desig;
+    private String designation;
     
     @NotBlank(message="Date of Birth is required")
-    private String dob;
+    private String dateOfBirth;
     
-    @NotBlank(message="Type of User is required")
-    private String typeOfUser;
+    @NotNull(message="Type of User is required")
+    private Boolean preferentialBidder;
     
-    @NotBlank(message="UserType is required")
+    @NotNull(message="UserType is required")
     private UserTypes userType;
     
-    @NotBlank(message="Company Details are required")
+    @NotNull(message="Company Details are required")
     private BidderCompanyDetails companyDetails;
 }

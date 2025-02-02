@@ -11,5 +11,4 @@ import com.auction.z_backend.vendor.model.UserVendor;
 public interface VendorUserRepository extends JpaRepository<UserVendor, String>{
     Optional<UserVendor> findByLoginId(String loginId);
     boolean existsByLoginId(String loginId);
-    
 }

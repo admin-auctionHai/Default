@@ -52,6 +52,9 @@ public class UserBidder {
     @Column
     private UserTypes typeOfUser;
 
+    @Column
+    private Boolean preferentialBidder;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="company_details_id",referencedColumnName="id")
     private BidderCompanyDetails companyDetails;

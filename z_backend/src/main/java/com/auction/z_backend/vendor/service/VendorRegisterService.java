@@ -1,11 +1,16 @@
 package com.auction.z_backend.vendor.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.auction.z_backend.auth.dto.response.AuthResponse;
+import com.auction.z_backend.auth.dto.response.UserCompanyDetailsDTO;
+import com.auction.z_backend.auth.dto.response.UserDetailsDto;
 import com.auction.z_backend.bidder.repository.BidderUserRepository;
 import com.auction.z_backend.common.enums.UserTypes;
 import com.auction.z_backend.security.jwt.JwtTokenProvider;
@@ -43,9 +48,9 @@ public class VendorRegisterService {
 
         logger.debug("Checking for existance in repositories");
 
+        System.err.println("Not foun d in repo "+(!bidderUserRepository.existsByLoginId(request.getLoginId()))+!vendorUserRepository.existsByLoginId(request.getLoginId()));
         try {
             if(!bidderUserRepository.existsByLoginId(request.getLoginId()) & !vendorUserRepository.existsByLoginId(request.getLoginId())){
-
                 if(request.getUserType()==UserTypes.VENDOR){
 
                     String hashedPassword = passwordEncoder.encode(request.getPassword());
@@ -59,16 +64,17 @@ public class VendorRegisterService {
                     vendor.setName(request.getTitle());
                     vendor.setContactNumber(request.getContactNumber());
                     vendor.setTypeOfUser(request.getUserType());
+                    vendor.setCreatedAt(LocalDateTime.now());
 
                     logger.debug("Vendor Details are Stored now storing Company details");
 
                     try {
                         
-                        VendorCompanyDetails vendorCompanyDetails = setVendorCompanyDetails(vendorDetails);
+                        VendorCompanyDetails company = setVendorCompanyDetails(vendorDetails);
                         
                         logger.debug("User Company Details are populated");
 
-                        vendor.setCompanyDetails(vendorCompanyDetails);
+                        vendor.setCompanyDetails(company);
 
                         try {
 
@@ -79,15 +85,39 @@ public class VendorRegisterService {
                             // ENTRIES IN DATABASE WILL ROLL BACK
 
                             try {
-                                String token = jwtTokenProvider.generateToken(savedVendor.getId(), hashedPassword, savedVendor.getTypeOfUser());
+                                List<String> token = jwtTokenProvider.generateToken(savedVendor.getId(), hashedPassword, savedVendor.getTypeOfUser());
                                 logger.debug("Token Generated : "+token);
-                                return new AuthResponse(
-                                    savedVendor.getId(),
-                                    savedVendor.getLoginId(),
-                                    token,
-                                    UserTypes.VENDOR,
-                                    savedVendor.getName()
-                                );
+                                AuthResponse response = new AuthResponse();
+                                UserDetailsDto userDetail = new UserDetailsDto();
+                                UserCompanyDetailsDTO userCompany = new UserCompanyDetailsDTO();
+
+                                userDetail.setLoginId(vendor.getLoginId());
+                                userDetail.setEmail(vendor.getEmail());
+                                userDetail.setTitle(vendor.getName());
+                                userDetail.setContactNumber(vendor.getContactNumber());
+                                userDetail.setDesignation(vendor.getDesignation());
+                                userDetail.setDateOfBirth(vendor.getDateOfBirth());
+
+                                // VendorCompanyDetails company = vendor.getCompanyDetails();
+
+                                userCompany.setCompanyName(company.getCompanyName());
+                                userCompany.setCompanyRegNumber(company.getCompanyRegNumber());
+                                userCompany.setCompanyAddress(company.getRegisterdAddress());
+                                userCompany.setCompanyEmailAddress(vendor.getEmail());
+                                userCompany.setCompanyCity(company.getCity());
+                                userCompany.setCompanyState(company.getState());
+                                userCompany.setCompanyPan_Tan(company.getPan_tan());
+                                userCompany.setCompanyPostalCode(company.getPostalCode());
+
+                                response.setAccessToken(token.get(0));
+                                response.setRefershToken(token.get(1));
+                                response.setLoginId(vendor.getLoginId());
+                                response.setName(vendor.getName());
+                                response.setUserType(vendor.getTypeOfUser());
+                                response.setUserDetails(userDetail);
+                                response.setUserCompanyDetails(userCompany);
+
+                                return response;
                             } catch (Exception e) {
                                 throw new RuntimeException("ErrorCode:-5 Token Creation Failed");
                             }
