@@ -33,3 +33,4 @@ build/
 .vscode/
 
 src/main/java/**/z_backend/public/
+public/
