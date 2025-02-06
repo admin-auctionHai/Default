@@ -33,9 +33,16 @@ function App() {
                 </Route>
               </Route>
               <Route path="searchAuction/*" element={< AuctionListing />} />
-              <Route path="listAuction" element={< ListItemForm />} />
+              <Route path='vendor'>
+                <Route path='listItem' element={< ListItemForm />} />
+                <Route path='myItems' element={< LotsDetailPage />} />
+              </Route>
+              <Route path="listItem" element={< ListItemForm />} />
               <Route path='MyLots' element={< LotsDetailPage />} />
               <Route path="myAuction" element={< ListItemForm />} />
+              <Route path='bidder'>
+                <Route path='MyBids' />
+              </Route>
               <Route path="MyBids" element={<AuctionRouter />} />
               <Route path="dashboard" element={<AuctionRouter />} />
               <Route path="policy" element={<AuctionRouter />} />

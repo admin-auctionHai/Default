@@ -47,7 +47,7 @@ const Layout = () => {
         "name": "Categories",
         "resource" :"categories",
         "action" : "view",
-        "link" : getCurrUserInfo.userType === 'BIDDER' ? "/searchAuction" : "/listAuction",
+        "link" : getCurrUserInfo.userType === 'BIDDER' ? "/searchAuction" : "/vendor/listItem",
         "subItems": [
           {
             "name": "Scrap/Disposal",
@@ -63,7 +63,7 @@ const Layout = () => {
               },
               {
                 "name": "List Metal Scrap",
-                "link": "/listAuction/scrap/metal",
+                "link": "/vendor/listItem/scrap/metal",
                 "resource" : "sell",
                 "action" : "view"
               },
@@ -75,7 +75,7 @@ const Layout = () => {
               },
               {
                 "name": "List E-Waste Scrap",
-                "link": "/listAuction/scrap/ewaste",
+                "link": "/vendor/listItem/scrap/ewaste",
                 "resource" : "sell",
                 "action" : "view"
               },
@@ -87,7 +87,7 @@ const Layout = () => {
               },
               {
                 "name": "List Plastic Scrap",
-                "link": "/listAuction/scrap/plastic",
+                "link": "/vendor/listItem/scrap/plastic",
                 "resource" : "sell",
                 "action" : "view"
               },
@@ -99,7 +99,7 @@ const Layout = () => {
               },
               {
                 "name": "List Glass Scrap",
-                "link": "/listAuction/scrap/glass",
+                "link": "/vendor/listItem/scrap/glass",
                 "resource" : "sell",
                 "action" : "view"
               },
@@ -111,7 +111,7 @@ const Layout = () => {
               },
               {
                 "name": "List Paper Scrap",
-                "link": "/listAuction/scrap/paper",
+                "link": "/vendor/listItem/scrap/paper",
                 "resource" : "sell",
                 "action" : "view"
               },
@@ -167,7 +167,7 @@ const Layout = () => {
       },
       {
         "name": "List Item",
-        "link": "/listAuction",
+        "link": "/vendor/listItem",
         "resource" : "sell",
         "action" : "view"
       },
@@ -179,7 +179,7 @@ const Layout = () => {
         "subItems" : [
           {
             "name" : "View My Lots",
-            "link" : "/myLots",
+            "link" : "/vendor/myItems",
             "resource" : "sell",
             "action" : "view"
           },
@@ -193,7 +193,7 @@ const Layout = () => {
       },
       {
         "name" : "My Bids",
-        "link" : "/myBid",
+        "link" : "/bidder/myBid",
         "resource" : "bid",
         "action" : "view"
       },
@@ -380,7 +380,7 @@ const Layout = () => {
 
   return (
       <div className="min-vh-100 d-flex flex-column">
-         <header className="bg-gradient-to-r from-white to-gray-300">
+        <header className="bg-gradient-to-r from-white to-gray-300">
         <div className="w-full bg-gray-100 pb-2">
           <div className="relative w-full bg-white">
             <div className="relative w-full h-[150px]">
@@ -416,7 +416,7 @@ const Layout = () => {
           </div>
         </div>
       </header>
-          <nav className="navbar navbar-expand sticky-top bg-blue-900 shadow py-0">
+          <nav className="navbar navbar-expand bg-blue-900 shadow py-0 z-40" style={{"position":"sticky","top":"0","zIndex":"90"}}>
               <div className="container-fluid px-4">
                   <div className="d-flex justify-content-between align-items-center w-100 py-2">
                       {/* Left side: Navigation Items */}

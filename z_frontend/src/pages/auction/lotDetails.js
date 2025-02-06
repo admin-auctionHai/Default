@@ -361,7 +361,7 @@ const LotsDetailPage = () => {
           
           {expandedItems[`unlisted-${index}`] && (
             <div className="p-4 border-t border-gray-200">
-              <LotsTable lots={item} showSeeDetail={true} />
+              <LotsTable item={item} showSeeDetail={true} />
             </div>
           )}
         </div>

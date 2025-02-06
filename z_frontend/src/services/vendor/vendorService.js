@@ -99,7 +99,7 @@ export const VendorService = {
                 // formData.append('images',new Blob([JSON.stringify()]))
                 console.log("Data to send to backend", formData);
                 
-                const response = await api.post(url,formData);
+                const response = await apiService.post(url,formData);
                 console.log(response);
                 if (response.data.ErrorCode=="0"){
                     return true;

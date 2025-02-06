@@ -87,10 +87,12 @@ const LotDetailCard = ({ lot, setSelectedLot, onSubmit }) => {
   const calculateLotsValue = () => {
     console.log("Calculating the lots value");
     let amount = 0;
-    formData.auctionLotDetails.forEach((val,ndx)=>{
-        console.log(parseInt(val.lotAuctionAmount));
-        amount += parseInt(val.lotAuctionAmount);
-    })
+    if(formData.auctionLotDetails){
+      formData.auctionLotDetails.forEach((val,ndx)=>{
+          console.log(parseInt(val.lotAuctionAmount));
+          amount += parseInt(val.lotAuctionAmount);
+      })
+    }
     return amount;
   }
   const handleSubmit = async () => {
@@ -113,7 +115,7 @@ const LotDetailCard = ({ lot, setSelectedLot, onSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{"zIndex":"1000"}}>
       <div className="bg-white rounded-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold">Item Details</h3>
