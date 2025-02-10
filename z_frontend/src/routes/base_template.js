@@ -8,6 +8,7 @@ import LangThemFontUtility from "./LanguageFontTheme";
 import { colors } from "@mui/material";
 import SiteMap from "../features/homepage/siteMap";
 import { useAuth } from "../services/auth/useAuthHook";
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 const Layout = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);

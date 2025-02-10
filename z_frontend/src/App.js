@@ -9,8 +9,8 @@ import SignUpPageBidder from './pages/auth/signupBidder';
 import SignUpPageVendor from './pages/auth/signupVendor';
 import SignUp from './pages/auth/signup';
 import AuctionListing from './features/auction/AuctionListing';
-import ListItemForm from './pages/auction/listItem';
-import LotsDetailPage from './pages/auction/lotDetails';
+import ListItemForm from './pages/vendor/listItem';
+import ItemDetailsPage from './pages/vendor/itemDetails';
 
 import 'bootstrap';
 import './App.css';
@@ -35,10 +35,10 @@ function App() {
               <Route path="searchAuction/*" element={< AuctionListing />} />
               <Route path='vendor'>
                 <Route path='listItem' element={< ListItemForm />} />
-                <Route path='myItems' element={< LotsDetailPage />} />
+                <Route path='myItems' element={< ItemDetailsPage />} />
               </Route>
               <Route path="listItem" element={< ListItemForm />} />
-              <Route path='MyLots' element={< LotsDetailPage />} />
+              <Route path='MyLots' element={< ItemDetailsPage />} />
               <Route path="myAuction" element={< ListItemForm />} />
               <Route path='bidder'>
                 <Route path='MyBids' />

@@ -3,7 +3,7 @@ import { PlusCircle, MinusCircle, AlertCircle, X, Trash2 } from 'lucide-react';
 import { GiCrossMark } from "react-icons/gi";
 import { useAuth } from '../../services/auth/useAuthHook';
 import { VendorService } from '../../services/vendor/vendorService';
-import ItemPublishPage from './itemPublishForAuction';
+import ItemPublishPage from '../auction/itemPublishForAuction';
 
 
 const ListItemForm = () => {
@@ -33,7 +33,7 @@ const ListItemForm = () => {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [alerts, setAlerts] = useState([]);
-  const [publishForm, setPublishForm] = useState({});
+  const [publishForm, setPublishForm] = useState(null);
 
   const validateForm = () => {
     const newErrors = {};
@@ -109,7 +109,7 @@ const ListItemForm = () => {
 
     console.log("New Image is : ", files);
     const newImages = files.map(file => ({
-      // url: URL.createObjectURL(file),
+      url: URL.createObjectURL(file),
       file: file
     }));
 
@@ -616,37 +616,6 @@ const ListItemForm = () => {
                                 alt={`Lot ${index + 1} image ${imageIndex + 1}`}
                                 className="w-full h-24 object-cover rounded-lg"
                                 />
-                                {/* <button
-                                type="button"
-                                onClick={() => removeImage(index, imageIndex)}
-                                className="absolute top-1 w-6 h-6 right-1 bg-red-500 border-double border-gray-300 rounded-full p-1 
-                                    opacity-50 group-hover:opacity-100 transition-opacity duration-200"
-                                title="Remove image"
-                                >
-                                <GiCrossMark className="w-4 h-4" />
-                                </button> */}
-                                {/* <button
-                                    type="button"
-                                    onClick={() => removeImage(index, imageIndex)}
-                                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 border-double border-gray-300 rounded-full p-1
-                                      opacity-50 group-hover:opacity-100 transition-opacity duration-200 z-10 cursor-pointer hover:opacity-100"
-                                    title="Remove image"
-                                  >
-                                    <svg 
-                                      className="w-full h-full text-white" 
-                                      xmlns="http://www.w3.org/2000/svg" 
-                                      fill="none" 
-                                      viewBox="0 0 24 24" 
-                                      stroke="currentColor"
-                                    >
-                                      <path 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round" 
-                                        strokeWidth={2} 
-                                        d="M6 18L18 6M6 6l12 12" 
-                                      />
-                                    </svg>
-                                  </button> */}
                                   <button
                                     type="button"
                                     onClick={() => removeImage(index, imageIndex)}

@@ -1,12 +1,6 @@
-import axios from "axios";
 import { useAuth } from "../auth/useAuthHook";
 import apiService from "../auth/axiosUtils";
 // import { use } from "react";
-
-
-const api = axios.create({
-    baseURL : "http://0.0.0.0:8080/api"
-})
 
 const handleApiRequest = async (requestFn) => {
     try {
@@ -108,6 +102,19 @@ export const VendorService = {
                 throw err.message;
             }
         }
+    },
+    async getAllItems(data){
+      console.log("Inside Vendor service to load initial data");
+      console.log("Login Id is",data);
+      let url = `/vendor/getAllItems?loginId=${data}`
+      let config = {
+        headers : {
+          "Authorization" : `Bearer ${localStorage.getItem('authToken')}`
+        }
+      }
+      console.log("Config is : ",config);
+      const res = await apiService.get(url,config);
+      return true;
     },
     async changeForm(data){
         console.log("Inside changing form data");

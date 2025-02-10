@@ -1,8 +1,11 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { ChevronDown,ChevronUp, Eye } from "lucide-react";
-import LotDetailCard from "./itemDetailsCard";
+import LotDetailCard from "../vendor/itemDetailsCard";
+import { useAuth } from "../../services/auth/useAuthHook";
+import { VendorService } from "../../services/vendor/vendorService";
+import { constructNow } from "date-fns";
 
-const LotsDetailPage = () => {
+const ItemDetailsPage = () => {
     const [expandedItems, setExpandedItems] = useState({});
     const [selectedLot, setSelectedLot] = useState(null);
   
@@ -102,6 +105,11 @@ const LotsDetailPage = () => {
       }
     ];
     
+
+
+    const upcomingAuctionItems = [];
+    const ongoingAuctionItems = [];
+    const endedAuctionItems = [];
     const unlistedLots = [
       {
         itemNo: "I789",
@@ -166,120 +174,45 @@ const LotsDetailPage = () => {
         ]
       }
     ];
-  
-    // const LotDetailCard = ({ lot }) => (
-    //   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    //     <div className="bg-white rounded-lg p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
-    //       <div className="flex justify-between items-center mb-4">
-    //         <h3 className="text-xl font-bold">Item Details </h3>
-    //         <button 
-    //           onClick={() => setSelectedLot(null)}
-    //           className="text-gray-500 hover:text-gray-700"
-    //         >
-    //           ✕
-    //         </button>
-    //       </div>
-    //       <div className="grid grid-cols-2 gap-4">
-    //         <div className="col-span-2 bg-gray-50 p-3 rounded">
-    //           <h4 className="font-semibold mb-2">Basic Information</h4>
-    //           <div className="grid grid-cols-2 gap-2">
-    //             <div className="space-y-2">
-    //               <label className="block">
-    //                 Company Name
-    //               </label>
-    //               <input value={lot.companyName} />
-    //             </div>                
-    //             <div className="space-y-2">
-    //               <label className="block">
-    //                  Auction Type
-    //               </label>
-    //               <input value={lot.auctionType} />
-    //             </div>
-    //             <div className="space-y-2">
-    //               <label className="block">
-    //                 Auctoon Description
-    //               </label>
-    //               <input value={lot.auctionDescription} />
-    //             </div>
-    //             <div className="space-y-2">
-    //               <label className="block">
-    //                 Auction Title
-    //               </label>
-    //               <input value={lot.auctionTitle} />
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className="col-span-2 rounded p-1">
-    //           <div className="flex flex-row w-full items-center justify-center">
-    //             <div className="space-y-2 space-x-2 p-2">
-    //               <label className="">
-    //                 Auction Start Date
-    //               </label>
-    //               <input value={lot.companyName} />
-    //             </div>                
-    //             <div className="space-y-2 space-x-2 p-2">
-    //               <label className="">
-    //                 Auction Publish Date
-    //               </label>
-    //               <input value={lot.companyName} /> 
-    //             </div>                
-    //             <div className="space-y-2 space-x-2 p-2">
-    //               <label className="block">
-                    
-    //               </label>
-    //               <input value={lot.companyName} />
-    //             </div>
-    //           </div>
 
-    //           <div>
-    //             <p> Total Lots</p>
-    //           </div>
+    //Using useEffect with no dependecy array
+    const {getCurrUserInfo} = useAuth();
+    useEffect(()=>{
+      const fetchData = async () =>{
+        console.log("Fetching initial Data");
+        const userInfo = getCurrUserInfo();
+        if(userInfo && userInfo.username){
+          console.log(userInfo.username,userInfo.id);
+          try{
+            const response = await VendorService.getAllItems(userInfo.id);
+            console.log("Response is received ",response);
+          }catch(err){
+            console.log("Erro while sending request to backend ",err);
+          }
+        }
+        else{
+          console.log("No userInfo is present");
+        }
+      }
 
-    //         </div>
-    //         {/* <div className="col-span-2">
-    //           <h4 className="font-semibold mb-2">Lot Details</h4>
-    //           <p>{lot.lotDetail}</p>
-    //         </div>
-    //         <div className="col-span-2">
-    //           <h4 className="font-semibold mb-2">Description</h4>
-    //           <p>{lot.description}</p>
-    //         </div>
-    //         <div className="col-span-2 bg-gray-50 p-3 rounded">
-    //           <h4 className="font-semibold mb-2">Specifications</h4>
-    //           <div className="grid grid-cols-2 gap-2">
-    //             <div>Dimensions: {lot.dimensions}</div>
-    //             <div>Material: {lot.material}</div>
-    //             <div>Quantity: {lot.quantity}</div>
-    //             {lot.startDate && <div>Start Date: {lot.startDate}</div>}
-    //             {lot.artist && <div>Artist: {lot.artist}</div>}
-    //           </div>
-    //         </div> */}
-    //       </div>
-    //       <div className="w-full flex flex-row justify-end">
-    //         <button className="m-1 p-1 bg-blue-400">
-    //           Edit Details
-    //         </button>
-    //         <button className="m-1 p-1 bg-red-700">
-    //           Delete Button
-    //         </button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
-  
+      fetchData();
+      // const tableData = await VendorService
+    },[getCurrUserInfo]);
     const LotsTable = ({ item, showSeeDetail }) => (
       <div className="w-full mt-1">
-        <div className="grid grid-cols-4 gap-4 p-1 bg-gray-100 rounded-t-lg text-sm font-semibold">
+        <div className="grid grid-cols-5 gap-4 p-1 bg-gray-100 rounded-t-lg text-sm font-semibold">
           <div>Lot Number</div>
           <div>Product Category</div>
           <div>Lot Detail</div>
-          <div>Action</div>
+          <div>EMD</div>
+          <div>Auction Amount</div>
         </div>
         {item.auctionLotDetails.map((lot, index) => ( 
-          <div key={index} className="grid grid-cols-4 p-2 gap-4 border-b">
+          <div key={index} className="grid grid-cols-5 p-2 gap-4 border-b">
             <div>{lot.auctionLotNumber}</div>
             <div>{lot.productCategory}</div>
             <div>{lot.lotDetail}</div>
+            <div></div>
             <div></div>
           </div>
         ))}
@@ -305,10 +238,9 @@ const LotsDetailPage = () => {
             onClick={() => setExpandedItems(prev => ({...prev, [`listed-${index}`]: !prev[`listed-${index}`]}))}
           >
             <div className="flex justify-between items-center">
-              <div className="grid grid-cols-6 gap-4 w-full">
+              <div className="grid grid-cols-5 gap-4 w-full">
                 <div className="font-semibold">{index + 1}</div>
                 <div>{item.auctionNo}</div>
-                <div>{item.itemNo}</div>
                 <div>{item.itemDetails}</div>
                 <div>{item.publishDate}</div>
                 <div className="flex justify-center items-center">
@@ -371,25 +303,53 @@ const LotsDetailPage = () => {
     return (
       <div className="w-full h-full flex flex-col items-center" id="div-id-lot-details">
         <div className="flex flex-col w-3/4 h-full">
-          <h1 className="m-2 p-2 text-2xl font-bold">Lot Details</h1>
+          <h1 className="m-2 p-2 text-2xl font-bold">Item Details</h1>
           
           <div id="div-id-listed-lots" className="flex flex-col w-full h-full items-start rounded-lg border border-gray-500 m-2 p-3">
-            <h3 className="text-xl font-semibold mb-4">Listed Lots</h3>
-            <div className="w-full grid grid-cols-6 gap-4 px-4 py-2 bg-gray-100 rounded-t-lg font-semibold">
-              <div>Sr.No</div>
-              <div>Auction No</div>
-              <div>Item No</div>
-              <div>Item Details</div>
-              <div>Publish Date</div>
-              <div>Auction Type</div>
+            <h3 className="text-xl font-semibold mb-4">Auction Items</h3>
+            <div className="w-full flex flex-col h-full p-2 items-start rounded-sm border border-gray-300">
+              <h4 className="text-left text-lg">Ongoing Auctions</h4>
+              <div className="w-full grid grid-cols-5 gap-4 px-4 py-2 bg-gray-100 rounded-t-lg font-semibold">
+                <div>Sr.No</div>
+                <div>Auction No</div>
+                <div>Item Details</div>
+                <div>Publish Date</div>
+                <div>Auction Type</div>
+              </div>
+              {listedLots.map((item, index) => (
+                <ListedLotCard key={index} item={item} index={index} />
+              ))}
             </div>
-            {listedLots.map((item, index) => (
-              <ListedLotCard key={index} item={item} index={index} />
-            ))}
+            <div className="w-full flex flex-col h-full p-2 items-start rounded-sm border border-gray-300">
+              <h4 className="text-left text-lg">Upcoming Auctions</h4>
+              <div className="w-full grid grid-cols-5 gap-4 px-4 py-2 bg-gray-100 rounded-t-lg font-semibold">
+                <div>Sr.No</div>
+                <div>Auction No</div>
+                <div>Item Details</div>
+                <div>Publish Date</div>
+                <div>Auction Type</div>
+              </div>
+              {listedLots.map((item, index) => (
+                <ListedLotCard key={index} item={item} index={index} />
+              ))}
+            </div>
+            <div className="w-full flex flex-col h-full p-2 items-start rounded-sm border border-gray-300">
+              <h4 className="text-left text-lg">Past Auctions</h4>
+              <div className="w-full grid grid-cols-5 gap-4 px-4 py-2 bg-gray-100 rounded-t-lg font-semibold">
+                <div>Sr.No</div>
+                <div>Auction No</div>
+                <div>Item Details</div>
+                <div>Publish Date</div>
+                <div>Auction Type</div>
+              </div>
+              {listedLots.map((item, index) => (
+                <ListedLotCard key={index} item={item} index={index} />
+              ))}
+            </div>
           </div>
   
           <div className="flex flex-col w-full h-full items-start border rounded-lg border-gray-500 m-2 p-2" id="div-unlisted-lots">
-            <h3 className="text-xl font-semibold mb-4">Unlisted Lots</h3>
+            <h3 className="text-xl font-semibold mb-4">Unlisted items</h3>
             <div className="w-full grid grid-cols-3 gap-4 px-4 py-2 bg-gray-100 rounded-t-lg font-semibold">
               <div>Sr.No</div>
               <div>Item No</div>
@@ -406,4 +366,4 @@ const LotsDetailPage = () => {
     );
   };
 
-export default LotsDetailPage;
+export default ItemDetailsPage;

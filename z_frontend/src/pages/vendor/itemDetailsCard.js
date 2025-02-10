@@ -7,7 +7,7 @@ const LotDetailCard = ({ lot, setSelectedLot, onSubmit }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [showLotDetails,setShowLotDetails] = useState(false);
   const [errors, setErrors] = useState({});
-    console.log(lot);
+  console.log(lot);
   useEffect(() => {
     // Initialize formData with lot data
     setFormData({

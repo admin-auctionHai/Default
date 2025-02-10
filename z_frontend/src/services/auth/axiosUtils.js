@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class ApiService {
-  constructor(baseURL = 'https://0.0.0.0:8080/api') {
+  constructor(baseURL = 'http://0.0.0.0:8080/api') {
     this.instance = axios.create({ baseURL });
     this.setupInterceptors();
   }
@@ -31,6 +31,7 @@ class ApiService {
       (error) => {
         if (error.response?.status === 401) {
           localStorage.clear();
+          console.log("Error code 401 is received");
           this.redirectToLogin();
         }
         return Promise.reject(error);
@@ -79,6 +80,7 @@ class ApiService {
   }
 
   post(url, data = {}, config = {}) {
+    console.log("Here Post method is called");
     return this.instance.post(url, data, config);
   }
 
